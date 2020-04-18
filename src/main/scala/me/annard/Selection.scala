@@ -1,5 +1,3 @@
 package me.annard
 
-case class Selection(id: Int, name: String) {
-
-}
+case class Selection(id: Long, name: String)

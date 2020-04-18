@@ -27,7 +27,7 @@ lazy val commonSettings =
   Seq(
     scalaVersion := Version.scala,
     organization := "me.annard",
-    organizationName := "Annard",
+    organizationName := "Annard Brouwer",
     startYear := Some(2020),
     scalacOptions ++= Seq(
       "-unchecked",
@@ -38,12 +38,7 @@ lazy val commonSettings =
       "-Wunused:imports",
     ),
     envVars in Test := Map("SCALA_ENV" -> "test"),
-    javaOptions ++= Seq(
-      "-DSCALA_ENV=dev",
-      "-DLOG_PATH=target"
-    ),
     Compile / run / fork := true,
     Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
     Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
   )
-

@@ -1,9 +1,9 @@
 package me.annard
 
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 import java.util.Currency
 
-class BetTest extends FlatSpec {
+class BetTest extends AnyFlatSpec {
 
   "Liability" should "be correctly calculated" in {
       val selection = Selection(42, "Beeblebrox")
