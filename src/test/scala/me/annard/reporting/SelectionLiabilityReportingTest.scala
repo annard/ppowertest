@@ -18,7 +18,7 @@ class SelectionLiabilityReportingTest extends AnyFlatSpec {
     reporter.writeValues(selLiabilities, builder)
     val reportStr = builder.mkString
 
-    assert(reportStr.startsWith("Selection Name\tCurrency\tNum Bets\tTotal Stakes\tTotal Liability"))
-    assert(reportStr.endsWith("Beeblebrox\tGBP\t1\t1.2\t2.4\n"))
+    assert(reportStr.startsWith("Selection Name      Currency            Num Bets            Total Stakes        Total Liability"))
+    assert(reportStr.trim().endsWith("£2.40"))
   }
 }
