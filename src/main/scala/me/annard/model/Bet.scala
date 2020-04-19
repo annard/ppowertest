@@ -1,4 +1,4 @@
-package me.annard
+package me.annard.model
 
 import java.util.Currency
 

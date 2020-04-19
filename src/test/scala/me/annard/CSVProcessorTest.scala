@@ -3,6 +3,7 @@ package me.annard
 import java.io.File
 import java.util.Currency
 
+import me.annard.model.{Bet, Selection}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class CSVProcessorTest extends AnyFlatSpec {

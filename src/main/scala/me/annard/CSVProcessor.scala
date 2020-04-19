@@ -5,6 +5,7 @@ import java.net.URL
 import java.util.Currency
 
 import com.github.tototoshi.csv.CSVReader
+import me.annard.model.{Bet, Selection}
 
 final class CSVProcessor(reader: CSVReader) extends EntityProcessor {
 

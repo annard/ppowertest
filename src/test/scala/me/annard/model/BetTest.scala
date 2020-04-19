@@ -1,4 +1,4 @@
-package me.annard
+package me.annard.model
 
 import org.scalatest.flatspec.AnyFlatSpec
 import java.util.Currency
