@@ -2,14 +2,15 @@ package me.annard
 
 import java.util.Currency
 
-import me.annard.model.{Bet, Selection, SelectionLiability}
+import me.annard.model.{Bet, Selection, SelectionLiability, TotalLiability}
 import me.annard.reporting.ReportWriter
 
 object BetCalculator {
   def apply(processor: EntityProcessor): BetCalculator = {
     val selectionToBetsMap: Map[Selection, Seq[Bet]] = updateSelections(processor)
-    val selectionLiabilities: Seq[SelectionLiability] = generateSelectionLiability(selectionToBetsMap)
-    new BetCalculator(selectionLiabilities)
+    val selectionLiabilities: Seq[SelectionLiability] = generateSelectionLiabilities(selectionToBetsMap)
+    val totalLiabilities: Seq[TotalLiability] = generateTotalLiabilities(selectionLiabilities)
+    new BetCalculator(selectionLiabilities, totalLiabilities)
   }
 
   @scala.annotation.tailrec
@@ -25,17 +26,25 @@ object BetCalculator {
     }
   }
 
-  def generateSelectionLiability(selectionsMap: Map[Selection, Seq[Bet]] ): Seq[SelectionLiability] = {
+  def generateSelectionLiabilities(selectionsMap: Map[Selection, Seq[Bet]]): Seq[SelectionLiability] = {
     selectionsMap.flatMap { case (selection, selBetList) => {
       val currencyMap: Map[Currency, Seq[Bet]] = selBetList.groupBy[Currency](bet => bet.currency)
-      currencyMap.flatMap { case(currency: Currency, curBetList: Seq[Bet]) => Seq(SelectionLiability(selection.name, currency, curBetList)) }
+      currencyMap.flatMap { case (currency: Currency, curBetList: Seq[Bet]) => Seq(SelectionLiability(selection.name, currency, curBetList)) }
     }}.toSeq
   }
 
-  //def generateTotalLiability(): Seq[TotalLiability]
+  def generateTotalLiabilities(selectionLiabilities: Seq[SelectionLiability]): Seq[TotalLiability] = {
+    val currencyMap: Map[Currency, Seq[SelectionLiability]] = selectionLiabilities.groupBy[Currency](selLiab => selLiab.currency)
+    currencyMap.flatMap { case (currency: Currency, selectionLiabs: Seq[SelectionLiability]) => {
+      val totalLiab = selectionLiabs.foldLeft(new TotalLiability(currency, 0L, 0.0, 0.0))((tl, selLiab) => {
+         new TotalLiability(currency, tl.betCount + selLiab.betCount, tl.totalStakes + selLiab.totalStakes, tl.totalLiability + selLiab.totalLiability)
+      })
+      Seq(totalLiab)
+    }}.toSeq
+  }
 }
 
-case class BetCalculator(selectionLiabilities: Seq[SelectionLiability]) { //, totalLiability: Seq[TotalLiability]) {
+case class BetCalculator(selectionLiabilities: Seq[SelectionLiability], totalLiabilities: Seq[TotalLiability]) {
 
   def selectionLiabilityReport(writer: ReportWriter): String = {
     val orderedLiabilities = selectionLiabilities.sortWith( (v1, v2) => {
@@ -55,5 +64,12 @@ case class BetCalculator(selectionLiabilities: Seq[SelectionLiability]) { //, to
     builder.mkString
   }
 
-  def totalLiabilityReport(writer: ReportWriter): String = ""
+  def totalLiabilityReport(writer: ReportWriter): String = {
+    val orderedLiabilities = totalLiabilities.sortBy(_.currencyCode)(Ordering[String].reverse)
+    // TODO Refactor this and function above to simplify code using one implementation
+    val builder: StringBuilder = writer.writeHeaders(orderedLiabilities, new StringBuilder())
+    writer.writeValues(orderedLiabilities, builder)
+    writer.writeFooters(orderedLiabilities, builder)
+    builder.mkString
+  }
 }

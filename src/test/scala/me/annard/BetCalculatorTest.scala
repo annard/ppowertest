@@ -29,7 +29,7 @@ class BetCalculatorTest extends AnyFlatSpec {
     val bet1 = Bet("BetMe-1", 4242424242L, selection, 2.0, 10.0, Currency.getInstance("EUR"))
     val bet2 = Bet("BetMe-2", 4242424668L, selection, 1.2, 2.0, Currency.getInstance("GBP"))
     val selToBetsMap = Map(selection -> Seq(bet1, bet2))
-    val selectionLiabilities = BetCalculator.generateSelectionLiability(selToBetsMap)
+    val selectionLiabilities = BetCalculator.generateSelectionLiabilities(selToBetsMap)
 
     assert(selectionLiabilities.size == 2)
 
@@ -40,6 +40,8 @@ class BetCalculatorTest extends AnyFlatSpec {
   }
 
   // TODO Missing test for ordering of entries
+
+  // TODO Missing test for total liabilities generation (I'm tired)
 }
 
 object NoneProcessor extends EntityProcessor {

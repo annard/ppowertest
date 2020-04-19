@@ -2,7 +2,7 @@ package me.annard
 
 import java.io.File
 
-import me.annard.reporting.SelectionLiabilityReport
+import me.annard.reporting.{SelectionLiabilityReport, TotalLiabilityReport}
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -14,8 +14,12 @@ object Main {
     val csvUrl = new File(inputPath).toURI().toURL()
     val csvProc = CSVProcessor(csvUrl)
     val betCalculator = BetCalculator(csvProc)
-    val reporter = new SelectionLiabilityReport
+    val report1 = new SelectionLiabilityReport
 
-    print(betCalculator.selectionLiabilityReport(reporter))
+    print(betCalculator.selectionLiabilityReport(report1))
+    print(" \n")
+
+    val report2 = new TotalLiabilityReport
+    print(betCalculator.totalLiabilityReport(report2))
   }
 }
