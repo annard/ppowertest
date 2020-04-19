@@ -42,3 +42,7 @@ lazy val commonSettings =
     Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
     Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
   )
+
+enablePlugins(JavaAppPackaging)
+mainClass in Compile := Some("me.annard.Main")
+discoveredMainClasses in Compile := Seq()
